@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Weekly Planner ✨</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- CONFETTI CANVAS — Drawn on top of everything for celebration animation -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- QUOTE BANNER — Daily motivational quote at the top -->
+    <div class="quote-banner">
+        <div class="quote-text" id="quote-text">"Loading your daily inspiration..."</div>
+        <div class="quote-author" id="quote-author"></div>
+    </div>
+
+    <!-- SITE HEADER — Title + week range + change week button -->
+    <header class="site-header">
+        <div class="site-title">✨ My Weekly Planner</div>
+        <div class="header-right">
+            <span class="week-label" id="week-label"></span>
+            <button class="btn-primary" onclick="showWeekModal()">📅 Change Week</button>
+        </div>
+    </header>
+
+    <!-- TAB NAVIGATION — Switch between Daily Planner & Weekly Goals -->
+    <div class="tab-nav" id="tab-nav" style="display: none;">
+        <div class="tab-nav-inner">
+            <button class="tab-btn active" id="tab-daily" onclick="showTab('daily')">
+                📅 Daily Planner
+            </button>
+            <button class="tab-btn" id="tab-goals" onclick="showTab('goals')">
+                🎯 Weekly Goals
+            </button>
+        </div>
+    </div>
+
+    <!-- WELCOME SCREEN — Only shown on very first visit -->
+    <div class="welcome-screen" id="welcome-screen">
+        <div class="welcome-emoji">🗓️</div>
+        <h2 class="welcome-title">Welcome to Your Planner!</h2>
+        <p class="welcome-subtitle">
+            Pick <strong>any day</strong> to start your week. It doesn't have to be Monday —
+            it's your week, your rules.
+        </p>
+        <div class="week-picker-row">
+            <input type="date" class="date-input" id="start-date-input">
+            <button class="btn-primary" onclick="startWeek()">Start My Week →</button>
+        </div>
+    </div>
+
+    <!-- WEEK GRID — The 7-day planner table (Daily Planner tab) -->
+    <div class="week-container" id="week-container" style="display: none;">
+        <div class="week-grid" id="week-grid"></div>
+    </div>
+
+    <!-- WEEKLY GOALS PAGE — Shown when "Weekly Goals" tab is active -->
+    <div class="goals-container" id="goals-container" style="display: none;">
+        <div class="goals-page">
+
+            <!-- Goals header: week range + big progress bar -->
+            <div class="goals-header">
+                <div class="goals-title-row">
+                    <h2 class="goals-title">🎯 This Week's Goals</h2>
+                    <p class="goals-week-range" id="goals-week-range"></p>
+                </div>
+                <div class="goals-progress-wrap">
+                    <div class="goals-progress-label">
+                        <span>Weekly Progress</span>
+                        <span id="goals-progress-text">0 / 0 goals completed</span>
+                    </div>
+                    <div class="goals-progress-track">
+                        <div class="goals-progress-fill" id="goals-progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- The list of goals -->
+            <div class="goals-list" id="goals-list"></div>
+
+            <!-- Add a new goal -->
+            <div class="add-goal-form">
+                <div class="add-goal-title">+ Add a New Goal</div>
+                <input
+                    type="text"
+                    class="goal-input"
+                    id="goal-input"
+                    placeholder="What do you want to achieve this week?"
+                    onkeydown="if(event.key==='Enter') addWeeklyGoal()">
+                <div class="form-row">
+                    <select class="priority-select" id="goal-priority-select">
+                        <option value="medium">🟡 Medium Priority</option>
+                        <option value="high">🔴 High Priority</option>
+                        <option value="low">🟢 Low Priority</option>
+                    </select>
+                    <button class="btn-add" onclick="addWeeklyGoal()">+ Add Goal</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- EDIT TASK MODAL -->
+    <div class="modal-overlay hidden" id="edit-modal">
+        <div class="modal">
+            <div class="modal-title">✏️ Edit Task</div>
+            <textarea id="edit-task-text" placeholder="What do you need to do?"></textarea>
+            <select id="edit-task-priority">
+                <option value="high">🔴 High Priority</option>
+                <option value="medium">🟡 Medium Priority</option>
+                <option value="low">🟢 Low Priority</option>
+            </select>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeEditModal()">Cancel</button>
+                <button class="btn-save"   onclick="saveEdit()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDIT GOAL MODAL -->
+    <div class="modal-overlay hidden" id="edit-goal-modal">
+        <div class="modal">
+            <div class="modal-title">✏️ Edit Goal</div>
+            <textarea id="edit-goal-text" placeholder="What's your goal for this week?"></textarea>
+            <select id="edit-goal-priority">
+                <option value="high">🔴 High Priority</option>
+                <option value="medium">🟡 Medium Priority</option>
+                <option value="low">🟢 Low Priority</option>
+            </select>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeEditGoalModal()">Cancel</button>
+                <button class="btn-save"   onclick="saveGoalEdit()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHANGE WEEK MODAL -->
+    <div class="modal-overlay hidden" id="week-modal">
+        <div class="modal">
+            <div class="modal-title">📅 Change Week Start</div>
+            <p class="modal-subtitle">Pick a new start date. All your existing tasks stay safe.</p>
+            <input type="date" class="modal-date-input" id="change-week-input">
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeWeekModal()">Cancel</button>
+                <button class="btn-save"   onclick="changeWeek()">Update Week</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
